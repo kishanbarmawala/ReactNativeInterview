@@ -1,31 +1,28 @@
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import {
-  SafeAreaView, StyleSheet,
-  Text,
-  useColorScheme,
-  View
-} from 'react-native';
-import {
-  Colors
-} from 'react-native/Libraries/NewAppScreen';
+import { StyleSheet } from 'react-native';
+import 'react-native-gesture-handler';
+import Home from "./src/screens/Home/index";
 
 const Stack = createStackNavigator();
 
 function App() {
-  
+
   return (
     <NavigationContainer>
       <Stack.Navigator
         initialRouteName="Home"
-        screenOptions={{
+        screenOptions={ {
           headerMode: 'screen',
-        }}>
+        } }>
         <Stack.Screen
           name="Home"
-          component={Home}
-          options={{
+          component={ Home }
+          options={ {
             title: 'Home',
-          }}
+            headerShown: false,
+          } }
         />
       </Stack.Navigator>
     </NavigationContainer>
