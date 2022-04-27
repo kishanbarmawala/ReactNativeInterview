@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
     headerView: {
         justifyContent: 'space-between',
-        height: 44,
+        height: 55,
         backgroundColor: 'rgba(52, 52, 52, 0.1)',
         flexDirection: 'row',
         paddingHorizontal: 16,

@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import { FlatList, Image, Platform, SafeAreaView, Text, View } from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
-import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view'
 import style from './styles';
 
 const Home = () => {
@@ -67,7 +66,6 @@ const Home = () => {
             let data = { name: name, email: email, password: password }
             formData[index] = data
             setFormData(formData)
-            console.log("New emp data list: ", formData)
             setSubmitTapped(true)
         }
     }
@@ -107,9 +105,8 @@ const Home = () => {
                     </View>
                 </View>
                 <View style={ { flex: 1 } }>
-                    <KeyboardAwareFlatList
-                        // style={ { flex: 1 } }
-                        // keyExtractor={item => item}
+                    <FlatList
+                        style={ { flex: 1 } }
                         data={ formData }
                         ref={ flatScroll }
                         removeClippedSubviews={ false }
@@ -171,12 +168,11 @@ const Home = () => {
                                 }
                             </View>
                         } } />
-                    <KeyboardAwareFlatList />
+                    { Platform.OS === 'ios' ? <KeyboardSpacer /> : null }
                 </View>
             </View>
         </SafeAreaView>
     )
-
 }
 
 export default Home;
