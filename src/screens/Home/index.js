@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import { FlatList, Image, Platform, SafeAreaView, Text, View } from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { KeyboardAwareFlatList } from 'react-native-keyboard-aware-scroll-view'
 import style from './styles';
 
 const Home = () => {
@@ -106,10 +107,12 @@ const Home = () => {
                     </View>
                 </View>
                 <View style={ { flex: 1 } }>
-                    <FlatList
+                    <KeyboardAwareFlatList
+                        // style={ { flex: 1 } }
                         // keyExtractor={item => item}
                         data={ formData }
                         ref={ flatScroll }
+                        removeClippedSubviews={ false }
                         onContentSizeChange={ () => flatScroll.current.scrollToEnd() }
                         renderItem={ ({ item, index }) => {
                             let isLastElement = index === formData.length - 1
@@ -168,7 +171,7 @@ const Home = () => {
                                 }
                             </View>
                         } } />
-                    { Platform.OS === 'ios' ? <KeyboardSpacer /> : null }
+                    <KeyboardAwareFlatList />
                 </View>
             </View>
         </SafeAreaView>
