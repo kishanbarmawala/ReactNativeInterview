@@ -29,7 +29,8 @@ export default StyleSheet.create({
         marginHorizontal: 8,
         padding: 4,
         borderRadius: 10,
-        backgroundColor: 'rgba(52, 52, 52, 0.05)'
+        backgroundColor: 'rgba(52, 52, 52, 0.05)',
+        flex:1
     },
     buttonText: {
         fontSize: 30,
