@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react';
-import { FlatList, Image, SafeAreaView, Text, View } from 'react-native';
+import React, { useRef, useState } from 'react';
+import { FlatList, Image, Platform, SafeAreaView, Text, View } from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
+import KeyboardSpacer from 'react-native-keyboard-spacer';
 import style from './styles';
 
 const Home = () => {
@@ -9,43 +10,41 @@ const Home = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [passwordVisible, setPasswordVisible] = useState(true);
+    const [buttonType, setButtonType] = useState('plus');
+    const [submitTapped, setSubmitTapped] = useState(false);
     const flatScroll = useRef(null);
-
-    [
-        {
-            name: '',
-            email: '',
-            pass: '',
-        },
-        {
-            name: '',
-            email: '',
-            pass: '',
-        },
-    ]
 
     const _onButtonPress = (type) => {
         if (type === 0) {
-            if (formData.length === 0) { return }
+            setButtonType('minus')
+            if (formData.length === 0) {
+                setFormData([]);
+                return
+            }
             const temp = [...formData];
-            temp.splice(formData.length - 1, 1);
+            temp.pop();
             setFormData(temp);
+            if (temp.length === 0) {
+                return
+            }
+            let d = temp[temp.length - 1]
+            setName(d.name);
+            setEmail(d.email);
+            setPassword(d.password);
+            setPasswordVisible(true);
+            setSubmitTapped(false);
         } else {
-            // let data = {
-            //     name: name,
-            //     email: email,
-            //     pass: password,
-            // }
+            setButtonType('plus')
             setFormData([...formData, {}]);
-            // console.log("FormData",formData);
             setName('');
             setEmail('');
             setPassword('');
             setPasswordVisible(true);
+            setSubmitTapped(false);
         }
     }
-    onPressEyeButton = () => {
-        console.log("onPressEyeButton");
+
+    const _onPressEyeButton = () => {
         setPasswordVisible(!passwordVisible);
     }
 
@@ -63,16 +62,12 @@ const Home = () => {
         } else if (passValidate(password) === false) {
             alert("Use minimum eight characters, at least one letter and one number for password")
         } else {
-            alert("You're good to go")
-
-            let data = {
-                name: name,
-                email: email,
-                password: password,
-            }
+            alert("Data saved successfully!")
+            let data = { name: name, email: email, password: password }
             formData[index] = data
-            setFormData(formData);
-            console.log("FormData", formData);
+            setFormData(formData)
+            console.log("New emp data list: ", formData)
+            setSubmitTapped(true)
         }
     }
 
@@ -85,7 +80,6 @@ const Home = () => {
     }
 
     const passValidate = (text) => {
-        // let reg = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
         let reg = /^(?!.*[\s])(?=.*\d)(?=.*[!@#$%^&_*+])(?=.*[a-z])(?=.*[A-Z]).{8,}$/
         if (reg.test(text) === false) {
             return false
@@ -94,76 +88,87 @@ const Home = () => {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <View style={{ flex: 1 }}>
-                <View style={style.headerView}>
-                    <Text style={{ fontSize: 20 }}>{'Employees Details'}</Text>
-                    <View style={style.headerButtonView}>
-                        <TouchableOpacity style={style.headerButtonText} onPress={() => _onButtonPress(0)}>
-                            <Text style={style.buttonText} >{'-'}</Text>
+        <SafeAreaView style={ { flex: 1 } }>
+            <View style={ { flex: 1 } }>
+                <View style={ style.headerView }>
+                    <Text style={ { fontSize: 20 } }>{ 'Employees Details' }</Text>
+                    <View style={ style.headerButtonView }>
+                        <TouchableOpacity style={ style.headerButtonText } onPress={ () => _onButtonPress(0) }>
+                            <View style={ style.headerButtonView }>
+                                <Text style={ style.buttonText } >{ '-' }</Text>
+                            </View>
                         </TouchableOpacity>
-                        <TouchableOpacity style={style.headerButtonText} onPress={() => _onButtonPress(1)}>
-                            <Text style={style.buttonText} >{'+'}</Text>
+                        <TouchableOpacity style={ style.headerButtonText } onPress={ () => _onButtonPress(1) }>
+                            <View style={ style.headerButtonView }>
+                                <Text style={ style.buttonText } >{ '+' }</Text>
+                            </View>
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={{ flex: 1 }}>
+                <View style={ { flex: 1 } }>
                     <FlatList
-                        keyExtractor={item => item}
-                        data={formData}
-                        ref={flatScroll}
-                        onContentSizeChange={() => flatScroll.current.scrollToEnd()}
-                        renderItem={({ item, index }) => {
-                            return <View style={[/*{ backgroundColor: item },*/ style.colorView]}>
-                                <Text style={style.formTitle}>{'Employee details form'}</Text>
+                        // keyExtractor={item => item}
+                        data={ formData }
+                        ref={ flatScroll }
+                        onContentSizeChange={ () => flatScroll.current.scrollToEnd() }
+                        renderItem={ ({ item, index }) => {
+                            let isLastElement = index === formData.length - 1
+                            return <View style={ style.colorView }>
+                                <Text style={ style.formTitle }>{ 'Employee details form' }</Text>
                                 <TextInput
-                                    style={style.textInput}
+                                    style={ style.textInput }
                                     placeholder="Enter name"
-                                    value={index === formData.length - 1 ? name : formData[index].name}
-                                    // onChangeText={text => setName(text)}
-                                    onChangeText={text => {
-                                        if (index === formData.length - 1) {
+                                    editable={ "name" in formData[index] ? false : true }
+                                    value={ isLastElement === true ? name : formData[index].name }
+                                    onChangeText={ text => {
+                                        if (isLastElement === true) {
                                             setName(text)
                                         }
-                                    }}
+                                    } }
                                 />
                                 <TextInput
-                                    style={style.textInput}
+                                    style={ style.textInput }
                                     placeholder="Enter email"
                                     keyboardType='email-address'
-                                    value={index === formData.length - 1 ? email : formData[index].email}
-                                    // onChangeText={text => setEmail(text)}
-                                    onChangeText={text => {
-                                        if (index === formData.length - 1) {
+                                    editable={ "name" in formData[index] ? false : true }
+                                    value={ isLastElement === true ? email : formData[index].email }
+                                    onChangeText={ text => {
+                                        if (isLastElement === true) {
                                             setEmail(text)
                                         }
-                                    }}
+                                    } }
                                 />
-                                <View style={style.textInput}>
+                                <View style={ style.textInput }>
                                     <TextInput
                                         placeholder="Enter password"
-                                        secureTextEntry={passwordVisible}
-                                        value={index === formData.length - 1 ? password : formData[index].password}
-                                        style={{ width: '86%', height: 30 }}
-                                        // onChangeText={text => setPassword(text)}
-                                        onChangeText={text => {
-                                            if (index === formData.length - 1) {
+                                        secureTextEntry={ isLastElement === true ? passwordVisible : true }
+                                        editable={ "name" in formData[index] ? false : true }
+                                        value={ isLastElement === true ? password : formData[index].password }
+                                        style={ { width: '88%', height: 40, paddingLeft: 0 } }
+                                        onChangeText={ text => {
+                                            if (isLastElement === true) {
                                                 setPassword(text)
                                             }
-                                        }}
+                                        } }
                                     />
-                                    <TouchableOpacity style={{ height: 35, width: 35, justifyContent: 'center', alignItems: 'center' }} activeOpacity={.5} onPress={() => onPressEyeButton()}>
-                                        <Image style={style.imageIcon} source={passwordVisible ? require('../../icons/eye.png') : require('../../icons/eye-slash.png')} />
-                                    </TouchableOpacity>
+                                    { submitTapped ? null : isLastElement && buttonType === 'plus' ?
+                                        <TouchableOpacity style={ { height: 35, width: 35, justifyContent: 'center', alignItems: 'center' } } activeOpacity={ .5 } onPress={ () => _onPressEyeButton() }>
+                                            <Image style={ style.imageIcon } source={ passwordVisible ? require('../../icons/eye.png') : require('../../icons/eye-slash.png') } />
+                                        </TouchableOpacity>
+                                        : null
+                                    }
                                 </View>
-                                <View style={{ alignItems: 'center' }}>
-                                    <TouchableOpacity style={style.buttonStyle} onPress={() => _onSubmitPress(index)}>
-                                        <Text style={{ fontSize: 18 }}>{'Submit'}</Text>
-                                    </TouchableOpacity>
-                                </View>
+                                { submitTapped ? null : isLastElement && buttonType === 'plus' ?
+                                    <View style={ { alignItems: 'center' } }>
+                                        <TouchableOpacity style={ style.buttonStyle } onPress={ () => _onSubmitPress(index) }>
+                                            <Text style={ { fontSize: 18 } }>{ 'Submit' }</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    : null
+                                }
                             </View>
-                        }}
-                    />
+                        } } />
+                    { Platform.OS === 'ios' ? <KeyboardSpacer /> : null }
                 </View>
             </View>
         </SafeAreaView>

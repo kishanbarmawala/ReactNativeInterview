@@ -20,9 +20,11 @@ export default StyleSheet.create({
         height: 34,
         justifyContent: 'center',
         alignItems: 'center',
+        // alignContent: 'center',
         backgroundColor: 'rgba(52, 52, 52, 0.05)',
         borderRadius: 20,
-        marginLeft: 12
+        marginLeft: 12,
+        // textAlignVertical: 'center'
     },
     colorView: {
         marginVertical: 8,
@@ -30,10 +32,12 @@ export default StyleSheet.create({
         padding: 4,
         borderRadius: 10,
         backgroundColor: 'rgba(52, 52, 52, 0.05)',
-        flex:1
+        flex: 1
     },
     buttonText: {
-        fontSize: 30,
+        fontSize: 24,
+        textAlign: 'center',
+        textAlignVertical: "center",
     },
     textInput: {
         height: 40,
@@ -44,9 +48,10 @@ export default StyleSheet.create({
         padding: 10,
         borderRadius: 4,
         borderColor: 'rgba(52, 52, 52, 0.5)',
-        justifyContent: 'space-between', 
+        justifyContent: 'space-between',
         flexDirection: 'row',
-        alignItems: 'center'
+        alignItems: 'center',
+        color: 'black'
     },
     formTitle: {
         fontSize: 16,
