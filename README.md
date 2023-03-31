@@ -1,4 +1,4 @@
-# ReactNativeInterview
+# ReactNative Form App
 
 In an interview with an organisation, they asked to develop a react native app with multiple operations such as
 - Add data to the list
